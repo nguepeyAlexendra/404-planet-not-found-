@@ -1,0 +1,29 @@
+{
+  "version": "gcov-lband-proto-0.1",
+  "name": "Prototype L-band HH/HV (non validé)",
+  "notes": "Seuils illustratifs pour un prototype pédagogique. Ils n'ont pas été validés par un expert ni calibrés sur des données de référence. Ne pas présenter comme un modèle universel ni afficher un chiffre de précision.",
+  "required_bands": ["HHHH", "HVHV"],
+  "classes": {
+    "0": {"key": "indeterminate", "label": "Indéterminé", "color": "#9aa0a6"},
+    "1": {"key": "water", "label": "Eau libre", "color": "#1f6fd1"},
+    "2": {"key": "dense_vegetation", "label": "Végétation dense", "color": "#0b5d1e"},
+    "3": {"key": "sparse_vegetation", "label": "Végétation clairsemée", "color": "#7cc576"},
+    "4": {"key": "urban", "label": "Zone bâtie", "color": "#d13b2f"},
+    "5": {"key": "bare_soil", "label": "Sol nu", "color": "#a67c52"}
+  },
+  "thresholds_db": {
+    "water_hh_max": -18.0,
+    "water_hv_max": -24.0,
+    "urban_hh_min": -6.0,
+    "dense_veg_hv_min": -14.0,
+    "sparse_veg_hv_min": -20.0
+  },
+  "explanations": {
+    "water": "Une surface d'eau calme réfléchit l'onde loin du radar (réflexion spéculaire) : très peu de signal revient, en HH comme en HV.",
+    "dense_vegetation": "La canopée diffuse l'onde dans plusieurs directions. Cette diffusion de volume renforce le canal croisé HV.",
+    "sparse_vegetation": "Un couvert plus léger produit une diffusion de volume modérée : HV est mesurable mais plus faible que sous forêt dense.",
+    "urban": "Les angles formés par le sol et les murs peuvent produire un double rebond, donc un retour HH très fort. Hauteur et état des bâtiments ne se déduisent pas de cette seule mesure.",
+    "bare_soil": "Un sol nu ou peu couvert rétrodiffuse peu en HV et moyennement en HH. L'humidité et la rugosité font varier le signal.",
+    "indeterminate": "Les valeurs observées ne correspondent clairement à aucune règle du prototype, ou une bande est absente."
+  }
+}

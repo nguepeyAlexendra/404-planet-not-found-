@@ -1,0 +1,47 @@
+# --- Secrets / environnement ---
+.env
+.env.*
+!.env.example
+*.local
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+coverage.xml
+htmlcov/
+
+# --- Bases de données et données générées ---
+*.db
+*.sqlite
+*.sqlite3
+data/
+backend/data/
+backend/nisar_vision.db
+
+# --- Node / frontend ---
+node_modules/
+dist/
+build/
+.vite/
+*.tsbuildinfo
+
+# --- Tests navigateur ---
+test-results/
+playwright-report/
+blob-report/
+playwright/.cache/
+
+# --- Éditeurs / OS ---
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.log

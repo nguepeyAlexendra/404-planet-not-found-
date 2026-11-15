@@ -1,0 +1,21 @@
+# Les histoires sont des exemples éditoriaux : aucun chiffre non vérifié n'y figure.
+from app.seed.demo_dates import DEMO_DATES
+
+STORIES = [
+ {"slug": "amazonie-exemple", "title": "Amazonie : voir la forêt à travers les nuages", "theme": "Forêts", "duration_min": 4, "is_example": True,
+  "synopsis": "Exemple de récit : comment un radar en bande L observe une forêt tropicale sous une couverture nuageuse presque permanente. Aucune donnée NISAR n'est encore associée à ces scènes.",
+  "sources": [{"label": "Mission NISAR, NASA", "url": "https://science.nasa.gov/mission/nisar/"}],
+  "scenes": [
+   {"title": "Une forêt sous les nuages", "body": "Les forêts tropicales sont souvent couvertes de nuages. Un satellite optique y voit mal. Un radar, lui, envoie ses propres micro-ondes qui traversent les nuages.", "lon": -62.0, "lat": -4.0, "zoom": 4, "layers": [], "provenance": "Texte éditorial, aucune mesure.", "limits": "Scène d'introduction sans donnée."},
+   {"title": "Ce que la bande L voit", "body": "En bande L, l'onde de grande longueur traverse le feuillage. La polarisation croisée HV est sensible à la structure du couvert : une forêt dense renvoie plus en HV qu'un sol nu.", "lon": -62.0, "lat": -4.0, "zoom": 6, "layers": [], "provenance": "Principes physiques, voir le simulateur niveau 4.", "limits": "Aucune valeur chiffrée n'est présentée ici."},
+   {"title": "Repérer un défrichement", "body": "Quand une parcelle de forêt est coupée, la diffusion de volume disparaît et le signal HV baisse. Comparer deux dates permet de repérer ce type de changement.", "lon": -62.0, "lat": -4.0, "zoom": 8, "layers": [], "provenance": "Principe de détection de changement.", "limits": "Un changement de signal doit être confirmé, il peut avoir d'autres causes."},
+   {"title": "Avec des observations réelles", "body": "Pour illustrer ce récit avec des observations vérifiables, il faut ingérer des produits NISAR couvrant la zone choisie, puis associer les couches à cette scène. Cette étape reste à faire.", "lon": -62.0, "lat": -4.0, "zoom": 8, "layers": [], "provenance": "Voir la documentation d'ingestion.", "limits": "Tant qu'aucun produit n'est associé, ce récit reste un exemple pédagogique."}]},
+ {"slug": "demo-defrichement", "title": "Démonstration : un défrichement simulé", "theme": "Démonstration", "duration_min": 3, "is_example": True,
+  "synopsis": "Récit de DÉMONSTRATION construit sur des données simulées, pour montrer comment le défilement pilote la carte. Ces images ne sont pas des observations NISAR.",
+  "sources": [{"label": "Données simulées par NISAR Vision (is_demo)", "url": None}],
+  "scenes": [
+   {"title": "Point de départ (simulation)", "body": "Cette scène montre un paysage simulé : un lac, une zone bâtie, un sol nu et une forêt. Les valeurs ont été générées par le programme.", "lon": 9.70, "lat": 4.05, "zoom": 10.5, "layers": ["nisar-gcov-hh"], "start": DEMO_DATES[0], "end": DEMO_DATES[0], "provenance": "Données de démonstration simulées.", "limits": "Pas une observation NISAR."},
+   {"title": "Le signal en polarisation croisée", "body": "En HV, la forêt simulée ressort plus claire que le sol nu et que l'eau. C'est le comportement attendu d'une diffusion de volume.", "lon": 9.70, "lat": 4.05, "zoom": 10.5, "layers": ["nisar-gcov-hv"], "start": DEMO_DATES[0], "end": DEMO_DATES[0], "provenance": "Données de démonstration simulées.", "limits": "Pas une observation NISAR."},
+   {"title": "Une clairière apparaît", "body": "Au fil des dates simulées, une zone de forêt est défrichée : le signal HV y baisse. L'animation parcourt les six dates de la démonstration.", "lon": 9.70, "lat": 4.05, "zoom": 11, "layers": ["nisar-gcov-hv"], "start": DEMO_DATES[2], "end": DEMO_DATES[5], "provenance": "Données de démonstration simulées.", "limits": "Pas une observation NISAR."},
+   {"title": "Limites de la lecture", "body": "Une baisse de signal ne dit pas pourquoi la forêt a disparu, ni si elle repoussera. Il faudrait des sources externes et une validation par un spécialiste.", "lon": 9.70, "lat": 4.05, "zoom": 11, "layers": ["nisar-gcov-hv"], "start": DEMO_DATES[5], "end": DEMO_DATES[5], "provenance": "Données de démonstration simulées.", "limits": "Interprétation prudente exigée."}]},
+]

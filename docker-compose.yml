@@ -1,0 +1,80 @@
+# Lancement : cp .env.example .env && docker compose up --build
+# Interface : http://localhost:8080   API (docs) : http://localhost:8000/api/docs (hors NV_ENV=prod)
+services:
+  db:
+    image: postgis/postgis:16-3.4
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-nisar}
+      POSTGRES_USER: ${POSTGRES_USER:-nisar}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?définir POSTGRES_PASSWORD dans .env}
+    volumes: [pgdata:/var/lib/postgresql/data]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-nisar} -d ${POSTGRES_DB:-nisar}"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  redis:
+    image: redis:7-alpine
+    command: ["redis-server", "--save", "", "--appendonly", "no"]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  api:
+    build: ./backend
+    environment: &backend-env
+      NV_ENV: ${NV_ENV:-prod}
+      NV_DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-nisar}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB:-nisar}
+      NV_REDIS_URL: redis://redis:6379/0
+      NV_CELERY_ALWAYS_EAGER: "false"
+      NV_DATA_DIR: /data
+      NV_CORS_ORIGINS: ${NV_CORS_ORIGINS:-http://localhost:8080}
+      NV_EARTHDATA_TOKEN: ${NV_EARTHDATA_TOKEN:-}
+      NV_USE_POSTGIS: ${NV_USE_POSTGIS:-true}
+      NV_LOG_LEVEL: ${NV_LOG_LEVEL:-INFO}
+    volumes: [nvdata:/data]
+    depends_on:
+      db: {condition: service_healthy}
+      redis: {condition: service_healthy}
+    ports: ["8000:8000"]
+    restart: unless-stopped
+
+  worker:
+    build: ./backend
+    command: ["celery", "-A", "app.workers.celery_app", "worker", "-l", "info", "--concurrency", "2"]
+    environment: *backend-env
+    volumes: [nvdata:/data]
+    depends_on:
+      api: {condition: service_healthy}
+    healthcheck:
+      test: ["CMD-SHELL", "celery -A app.workers.celery_app inspect ping -d celery@$$HOSTNAME || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+
+  frontend:
+    build: ./frontend
+    depends_on:
+      api: {condition: service_healthy}
+    ports: ["8080:80"]
+    restart: unless-stopped
+
+  # Outil d'exploitation (profil « tools ») :
+  #   docker compose --profile tools run --rm cli seed-demo
+  #   docker compose --profile tools run --rm cli ingest-remote --wkt "POINT(9.7 4.05)" --start 2026-10-21 --end 2026-11-05 --dry-run
+  cli:
+    build: ./backend
+    profiles: ["tools"]
+    entrypoint: ["python", "-m", "app.cli"]
+    environment: *backend-env
+    volumes: [nvdata:/data]
+    depends_on:
+      db: {condition: service_healthy}
+
+volumes:
+  pgdata:
+  nvdata:
